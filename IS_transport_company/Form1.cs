@@ -21,18 +21,20 @@ namespace IS_transport_company
             NpgsqlDataReader pgsqlDataReader;
 
             InitializeComponent();
-            string connectionString = "Host=localhost;Port=5432;Username=postgres;Password=235711;Database=transport_company;";
-            pgsqlConnection = new NpgsqlConnection(connectionString);
-
-            string getAllTablesQuery = "SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE';";
-            pgsqlCommand = new NpgsqlCommand(getAllTablesQuery, pgsqlConnection);
+            string connectionString = "Host=localhost;Port=5432;Username=postgres;Password=qweqwe123;Database=transport_company;";
+            pgsqlConnection = new NpgsqlConnection(connectionString);            
 
             tablesPanel.ColumnCount = 1;
             tablesPanel.RowCount = 1;
             try
             {
+                MessageBox.Show("Информационная система\n'Транспортная компания'\n\nРазработчик: Свердюков Виктор\nСтудент группы БД-21-1\n\nПодключение к базе данных...");
+
                 pgsqlConnection.Open();
-                MessageBox.Show("Connected to PostgreSQL!");
+                MessageBox.Show("Подключение успешно!");            
+
+                string getAllTablesQuery = "SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE';";
+                pgsqlCommand = new NpgsqlCommand(getAllTablesQuery, pgsqlConnection);
 
                 List<Button> tableButtons = new List<Button>();
                 pgsqlDataReader = pgsqlCommand.ExecuteReader();
@@ -80,6 +82,11 @@ namespace IS_transport_company
             finally {
                 pgsqlConnection.Close();
             }
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
