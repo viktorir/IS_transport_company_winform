@@ -30,8 +30,8 @@
         {
             this.tablesPanel = new System.Windows.Forms.TableLayoutPanel();
             this.tableView = new System.Windows.Forms.DataGridView();
-            this.TableInteractivePanel = new System.Windows.Forms.Panel();
             this.tableInteractiveButtonPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.tableInteractivePanel = new System.Windows.Forms.TableLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.tableView)).BeginInit();
             this.SuspendLayout();
             // 
@@ -73,13 +73,6 @@
             this.tableView.Size = new System.Drawing.Size(483, 450);
             this.tableView.TabIndex = 1;
             // 
-            // TableInteractivePanel
-            // 
-            this.TableInteractivePanel.Location = new System.Drawing.Point(623, 0);
-            this.TableInteractivePanel.Name = "TableInteractivePanel";
-            this.TableInteractivePanel.Size = new System.Drawing.Size(250, 408);
-            this.TableInteractivePanel.TabIndex = 2;
-            // 
             // tableInteractiveButtonPanel
             // 
             this.tableInteractiveButtonPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -99,13 +92,30 @@
             this.tableInteractiveButtonPanel.Size = new System.Drawing.Size(249, 36);
             this.tableInteractiveButtonPanel.TabIndex = 0;
             // 
+            // tableInteractivePanel
+            // 
+            this.tableInteractivePanel.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
+            this.tableInteractivePanel.ColumnCount = 2;
+            this.tableInteractivePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableInteractivePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableInteractivePanel.Location = new System.Drawing.Point(624, 12);
+            this.tableInteractivePanel.Name = "tableInteractivePanel";
+            this.tableInteractivePanel.RowCount = 5;
+            this.tableInteractivePanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableInteractivePanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableInteractivePanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableInteractivePanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableInteractivePanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableInteractivePanel.Size = new System.Drawing.Size(249, 396);
+            this.tableInteractivePanel.TabIndex = 2;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(873, 450);
+            this.Controls.Add(this.tableInteractivePanel);
             this.Controls.Add(this.tableInteractiveButtonPanel);
-            this.Controls.Add(this.TableInteractivePanel);
             this.Controls.Add(this.tableView);
             this.Controls.Add(this.tablesPanel);
             this.Name = "Form1";
@@ -120,8 +130,8 @@
 
         private System.Windows.Forms.TableLayoutPanel tablesPanel;
         private System.Windows.Forms.DataGridView tableView;
-        private System.Windows.Forms.Panel TableInteractivePanel;
         private System.Windows.Forms.TableLayoutPanel tableInteractiveButtonPanel;
+        private System.Windows.Forms.TableLayoutPanel tableInteractivePanel;
     }
 }
 
