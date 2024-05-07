@@ -65,13 +65,16 @@
             // 
             this.tableView.AllowUserToAddRows = false;
             this.tableView.AllowUserToDeleteRows = false;
-            this.tableView.AllowUserToOrderColumns = true;
             this.tableView.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.Raised;
             this.tableView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.tableView.Location = new System.Drawing.Point(134, 0);
+            this.tableView.MultiSelect = false;
             this.tableView.Name = "tableView";
+            this.tableView.ReadOnly = true;
+            this.tableView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.tableView.Size = new System.Drawing.Size(483, 450);
             this.tableView.TabIndex = 1;
+            this.tableView.DataBindingComplete += new System.Windows.Forms.DataGridViewBindingCompleteEventHandler(this.tableView_DataBindingComplete);
             // 
             // tableInteractiveButtonPanel
             // 
@@ -97,7 +100,7 @@
             this.tableInteractivePanel.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
             this.tableInteractivePanel.ColumnCount = 2;
             this.tableInteractivePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableInteractivePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableInteractivePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 248F));
             this.tableInteractivePanel.Location = new System.Drawing.Point(624, 12);
             this.tableInteractivePanel.Name = "tableInteractivePanel";
             this.tableInteractivePanel.RowCount = 5;

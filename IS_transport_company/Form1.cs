@@ -26,7 +26,7 @@ namespace IS_transport_company
         public Form1()
         {
             InitializeComponent();
-            string connectionString = "Host=localhost;Port=5432;Username=postgres;Password=235711;Database=transport_company;";
+            string connectionString = "Host=localhost;Port=5432;Username=postgres;Password=qweqwe123;Database=transport_company;";
             pgsqlConnection = new NpgsqlConnection(connectionString);            
 
             tablesPanel.ColumnCount = 1;
@@ -52,7 +52,6 @@ namespace IS_transport_company
                     tableButton.Text = tableName;
 
                     tableButton.Click += tableButton_Click;
-                    
 
                     tableButtons.Add(tableButton);
                     tablesPanel.Controls.Add(tableButton);
@@ -61,7 +60,7 @@ namespace IS_transport_company
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error: {ex.Message}");
+                MessageBox.Show($"Error Form1: {ex.Message}");
             }
             finally {
                 pgsqlConnection.Close();
@@ -77,11 +76,31 @@ namespace IS_transport_company
                 DataTable table = new DataTable();
                 table.Load(pgsqlDataReader);
                 tableView.DataSource = table;
+
+                tableInteractivePanel.ColumnCount = 2;
+                tableInteractivePanel.RowCount = table.Rows.Count;
+
+                inputColumns = new List<TextBox>();
+                for (int i = 0; i < table.Columns.Count; i++)
+                {
+                    Label columnName = new Label();
+                    columnName.Text = table.Columns[i].ToString() + ": ";
+                    this.tableInteractivePanel.Controls.Add(columnName, 0, i);
+
+                    TextBox inputColumn = new TextBox();
+                    inputColumn.Tag = table.Columns[i].ToString();
+                    inputColumn.Text = "";
+                    inputColumns.Add(inputColumn);
+                    this.tableInteractivePanel.Controls.Add(inputColumn, 1, i);
+                }
+
                 tableView.SelectionChanged += tableView_SelectionChanged;
             }
         }
+
         private void tableButton_Click(object sender, EventArgs e)
         {
+            tableView.SelectionChanged -= tableView_SelectionChanged;
             try
             {
                 Button button = (Button)sender;
@@ -91,32 +110,7 @@ namespace IS_transport_company
 
                 pgsqlConnection.Open();
 
-                pgsqlCommand = new NpgsqlCommand("SELECT * FROM " + button.Text, pgsqlConnection);
-                pgsqlDataReader = pgsqlCommand.ExecuteReader();
-                if (pgsqlDataReader.HasRows)
-                {
-                    DataTable table = new DataTable();
-                    table.Load(pgsqlDataReader);
-                    tableView.DataSource = table;
-                    tableView.SelectionChanged += tableView_SelectionChanged;
-
-                    tableInteractivePanel.ColumnCount = 2;
-                    tableInteractivePanel.RowCount = table.Columns.Count;
-
-                    inputColumns = new List<TextBox>();
-                    for (int i = 0; i < table.Columns.Count; i++)
-                    {
-                        Label columnName = new Label();
-                        columnName.Text = table.Columns[i].ToString() + ": ";
-                        this.tableInteractivePanel.Controls.Add(columnName, 0, i);
-
-                        TextBox inputColumn = new TextBox();
-                        inputColumn.Tag = table.Columns[i].ToString();
-                        inputColumn.Text = "";
-                        inputColumns.Add(inputColumn);
-                        this.tableInteractivePanel.Controls.Add(inputColumn, 1, i);
-                    }
-                }
+                updateTableView(button.Text);
 
                 Button addButton = new Button();
                 addButton.Text = "Добавить";
@@ -133,11 +127,12 @@ namespace IS_transport_company
                 Button deleteButton = new Button();
                 deleteButton.Tag = button.Text;
                 deleteButton.Text = "Удалить";
+                deleteButton.Click += deleteButton_Click;
                 tableInteractiveButtonPanel.Controls.Add(deleteButton);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error: {ex.Message}");
+                MessageBox.Show($"Error tableButton_Click: {ex.Message}");
             }
             finally
             {
@@ -146,7 +141,15 @@ namespace IS_transport_company
         }
         private void tableView_SelectionChanged(object sender, EventArgs e)
         {
+            if (tableView.ColumnCount != inputColumns.Count)
+            {
+                MessageBox.Show("wtf");
+            }
 
+            for (int i = 0; i < tableView.ColumnCount; i++)
+            {
+                inputColumns[i].Text = tableView.SelectedRows[0].Cells[i].Value.ToString();
+            }     
         }
         private void addButton_Click( object sender, EventArgs e )
         {
@@ -158,23 +161,57 @@ namespace IS_transport_company
                 string insertQuery = "INSERT INTO " + button.Tag + " VALUES (";
                 inputColumns.ForEach(inputColumn =>
                 {
-                    insertQuery += "'" + inputColumn.Text + "',";
+                    insertQuery += "'" + inputColumn.Text.Replace(',', '.') + "',";
                 });
                 insertQuery = insertQuery.Remove(insertQuery.Length - 1);
                 insertQuery += ");";
-                MessageBox.Show(insertQuery);
+                
 
                 pgsqlCommand = new NpgsqlCommand(insertQuery, pgsqlConnection);
                 pgsqlCommand.ExecuteNonQuery();
-                updateTableView(button.Tag.ToString());
+                MessageBox.Show("Информация добавлена! Обновите таблицу, нажав на неё ещё раз!");
             }
             catch ( Exception ex )
             {
-                MessageBox.Show($"Error: {ex.Message}");
+                MessageBox.Show($"Error addButton_Click: {ex.Message}");
             }
             finally { 
                 pgsqlConnection.Close(); 
             }
+        }
+
+        private void deleteButton_Click( object sender, EventArgs e )
+        {
+            try
+            {
+                Button button = (Button)sender;
+
+                if (inputColumns[0].Text == "")
+                {
+                    MessageBox.Show("Для удаления введите id или выбирете строку из таблицы!");
+                    return;
+                }
+
+                pgsqlConnection.Open();
+                Console.WriteLine("DELETE FROM " + button.Tag + " WHERE '" + inputColumns[0].Tag + "'='" + inputColumns[0].Text + "';");
+
+                pgsqlCommand = new NpgsqlCommand("DELETE FROM " + button.Tag + " WHERE " + inputColumns[0].Tag + "=" + inputColumns[0].Text + ";", pgsqlConnection);
+                pgsqlCommand.ExecuteNonQuery();
+                MessageBox.Show("Информация удалена! Обновите таблицу, нажав на неё ещё раз!");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error addButton_Click: {ex.Message}");
+            }
+            finally
+            {
+                pgsqlConnection.Close();
+            }
+        }
+
+        private void tableView_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
+        {
+            tableView.ClearSelection();
         }
     }
 }
