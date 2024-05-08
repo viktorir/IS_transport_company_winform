@@ -26,7 +26,7 @@ namespace IS_transport_company
         public Form1()
         {
             InitializeComponent();
-            string connectionString = "Host=localhost;Port=5432;Username=postgres;Password=qweqwe123;Database=transport_company;";
+            string connectionString = "Host=localhost;Port=5432;Username=postgres;Password=235711;Database=transport_company;";
             pgsqlConnection = new NpgsqlConnection(connectionString);            
 
             tablesPanel.ColumnCount = 1;
@@ -120,6 +120,7 @@ namespace IS_transport_company
 
                 Button editButton = new Button();
                 editButton.Tag = button.Text;
+                editButton.Click += editButton_Click;
                 editButton.Text = "Изменить";
                 tableInteractiveButtonPanel.Controls.Add(editButton);
 
@@ -179,7 +180,32 @@ namespace IS_transport_company
                 pgsqlConnection.Close(); 
             }
         }
+        private void editButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Button button = (Button)sender;
 
+                pgsqlConnection.Open();
+                string updateQuery = "UPDATE " + button.Tag + " SET ";
+                inputColumns.ForEach(inputColumn =>
+                {
+                    updateQuery += inputColumn.Tag + "='" + inputColumn.Text + "',";
+                });
+                updateQuery = updateQuery.Remove(updateQuery.Length - 1) + " WHERE " + inputColumns[0].Tag + "='" + inputColumns[0].Text + "';";
+
+                MessageBox.Show(updateQuery);
+
+                pgsqlCommand = new NpgsqlCommand(updateQuery, pgsqlConnection);
+                pgsqlCommand.ExecuteNonQuery();
+                MessageBox.Show("Информация обновлена! Обновите таблицу, нажав на неё ещё раз!");
+            } 
+            catch (Exception ex )
+            {
+                MessageBox.Show($"Error editButton_Click: {ex.Message}");
+            }
+            finally {  pgsqlConnection.Close(); }
+        }
         private void deleteButton_Click( object sender, EventArgs e )
         {
             try
